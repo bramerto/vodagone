@@ -22,7 +22,6 @@ public class UserDBMapper {
     }
 
     public User getSingleUser(ResultSet rs) throws SQLException {
-
         if (!rs.next()) return null;
         return setUser(rs);
     }

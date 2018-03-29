@@ -3,6 +3,7 @@ package vodagone.store;
 import org.junit.Before;
 import org.junit.Test;
 import vodagone.domain.Subscription;
+import vodagone.mapper.SubscriptionDBMapper;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -12,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
@@ -46,6 +48,7 @@ public class SubscriptionDaoTest {
 
         try {
             //PREPARE MOCK
+            SubscriptionDBMapper subscriptionDBMapper = mock(SubscriptionDBMapper.class);
             Connection connection = mock(Connection.class);
             PreparedStatement preparedStatement = mock(PreparedStatement.class);
             ResultSet resultSet = mock(ResultSet.class);
