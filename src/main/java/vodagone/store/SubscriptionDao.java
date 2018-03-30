@@ -1,90 +1,77 @@
 package vodagone.store;
 
 import vodagone.domain.Subscription;
-import vodagone.domain.User;
-import vodagone.mapper.SubscriptionDBMapper;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class SubscriptionDao {
 
     private Connection connection;
+    private String defaultSelect;
 
-    @Inject
-    private SubscriptionDBMapper subscriptionDBMapper; //TODO: DI does not work
+    public SubscriptionDao() {
+        defaultSelect = "SELECT a.id, a.aanbieder, a.dienst, a.prijs, a.deelbaar, " +
+                        "ua.price, ua.status, ua.startDatum, ua.verdubbeling " +
+                        "FROM abonnementen AS a " +
+                        "INNER JOIN userabonnementen AS ua " +
+                        "ON a.id = ua.abbonementid ";
 
-    @Inject
-    public SubscriptionDao(@Named("connection") Connection connection) {
-        this.connection = connection;
+        IDatabaseConnect databaseConnect = new MySqlConnect();
+
+        this.connection = databaseConnect.connect();
     }
 
-    public ArrayList<Subscription> getAllSubscriptions(String filter) throws SQLException {
-        String sql = "SELECT * FROM abbonementen WHERE aanbieder = ? OR dienst = ?";
+    public ResultSet getAllSubscriptions(String filter) throws SQLException {
+        String sql = defaultSelect + "WHERE a.aanbieder = ? OR a.dienst = ?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, filter);
         preparedStatement.setString(2, filter);
-        ResultSet resultSet = preparedStatement.executeQuery();
 
-        return subscriptionDBMapper.getSubscriptionList(resultSet);
+        return preparedStatement.executeQuery();
     }
 
-    public ArrayList<Subscription> getAllSubscriptions() throws SQLException {
-        String sql = "SELECT * FROM abbonementen";
+    public ResultSet getAllSubscriptions() throws SQLException {
+        String sql = defaultSelect;
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        ResultSet resultSet = preparedStatement.executeQuery();
-
-        return subscriptionDBMapper.getSubscriptionList(resultSet);
+        return preparedStatement.executeQuery();
     }
 
-    public ArrayList<Subscription> getAllSubscriptionsByUser(int userId) throws SQLException {
+    public ResultSet getAllSubscriptionsByUser(int userId) throws SQLException {
 
-        String sql = "SELECT a.id, a.aanbieder, a.dienst, a.prijs, a.deelbaar, " +
-                     "ua.price, ua.status, ua.startDatum, ua.verdubbeling " +
-                     "FROM abbonementen AS a " +
-                     "INNER JOIN userabbonementen AS ua ON a.id = ua.abbonementid " +
-                     "WHERE ua.userid = ?";
+        String sql = defaultSelect + "WHERE ua.userid = ?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setInt(1, userId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-
-        return subscriptionDBMapper.getSubscriptionList(resultSet);
+        return preparedStatement.executeQuery();
     }
 
-    public Subscription getSubscription(int id, int authenticatedUserId) throws SQLException {
-        String sql = "SELECT a.id, a.aanbieder, a.dienst, a.prijs, a.deelbaar, " +
-                     "ua.price, ua.status, ua.startDatum, ua.verdubbeling, " +
-                     "FROM abbonementen AS a " +
-                     "INNER JOIN userabbonementen AS ua ON a.id = ua.abbonementid " +
-                     "WHERE ua.userid = ? AND a.id = ?";
+    public ResultSet getSubscription(int id, int authenticatedUserId) throws SQLException {
+        String sql = defaultSelect + "WHERE ua.userid = ? AND a.id = ?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setInt(1, authenticatedUserId);
         preparedStatement.setInt(2, id);
-        ResultSet resultSet = preparedStatement.executeQuery();
-
-        return subscriptionDBMapper.getSingleSubscription(resultSet);
+        return preparedStatement.executeQuery();
     }
 
-    public void shareSubscription(User sharedToUser, Subscription toBeSharedSubscription) throws SQLException {
-        String sql = "INSERT INTO userabbonementen(userid, abbonementid) VALUES(?, ?)";
+    public void shareSubscription(int sharedToUserId, int toBeSharedSubscriptionId) throws SQLException {
+        String sql = "INSERT INTO userabonnementen(userid, abbonementid) " +
+                     "VALUES(?, ?)";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setInt(1, sharedToUser.getId());
-        preparedStatement.setInt(2, toBeSharedSubscription.getId());
+        preparedStatement.setInt(1, sharedToUserId);
+        preparedStatement.setInt(2, toBeSharedSubscriptionId);
         preparedStatement.executeUpdate();
     }
 
     public void addSubscription(Subscription subscription) throws SQLException {
-        String sql = "INSERT OR REPLACE INTO abbonementen(id, aanbieder, dienst) VALUES(?, ?, ?) ";
+        String sql = "INSERT OR REPLACE INTO abonnementen(id, aanbieder, dienst) " +
+                     "VALUES(?, ?, ?) ";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setInt(1, subscription.getId());
@@ -94,7 +81,9 @@ public class SubscriptionDao {
     }
 
     public void upgradeSubscription(int id, int userId, String upgrade) throws SQLException {
-        String sql = "UPDATE userabbonementen SET verdubbeling = ?, price = price*2 WHERE abbonementid = ? AND userid = ?";
+        String sql = "UPDATE userabonnementen " +
+                     "SET verdubbeling = ?, price = price*2 " +
+                     "WHERE abbonementid = ? AND userid = ?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, upgrade);
@@ -103,11 +92,13 @@ public class SubscriptionDao {
         preparedStatement.executeUpdate();
     }
 
-    public void terminateSubscription(Subscription subscription) throws SQLException {
-        String sql = "UPDATE abbonementen SET status = 'opgezegd' WHERE id = ?";
+    public void terminateSubscription(int id) throws SQLException {
+        String sql = "UPDATE userabonnementen " +
+                     "SET status = 'opgezegd' " +
+                     "WHERE abbonementid = ?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setInt(1, subscription.getId());
+        preparedStatement.setInt(1, id);
         preparedStatement.executeUpdate();
     }
 }

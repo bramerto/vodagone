@@ -1,4 +1,4 @@
-package vodagone.mapper;
+package vodagone.mapper.DB;
 
 import org.junit.Test;
 
@@ -6,13 +6,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class UserDBMapperTest {
+public class SubscriptionDBMapperTest {
 
     @Test
-    public void getUsersList() {
+    public void getSubscriptionList() {
     }
 
     @Test
-    public void getSingleUser() {
+    public void getSingleSubscription() {
     }
 }

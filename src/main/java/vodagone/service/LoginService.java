@@ -3,23 +3,22 @@ package vodagone.service;
 import vodagone.domain.User;
 import vodagone.dto.request.LoginRequest;
 import vodagone.dto.response.LoginResponse;
+import vodagone.mapper.DB.UserDBMapper;
 import vodagone.mapper.UserResponseMapper;
 import vodagone.store.UserDao;
 
-import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Path("/login")
 public class LoginService {
 
-    @Inject
-    private UserDao userDao; //TODO: DI does not work
-
-    @Inject
-    private UserResponseMapper userResponseMapper; //TODO: DI does not work
+    private UserDao userDao = new UserDao();
+    private UserResponseMapper userResponseMapper = new UserResponseMapper();
+    private UserDBMapper userDBMapper = new UserDBMapper();
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -27,13 +26,15 @@ public class LoginService {
     public Response login(LoginRequest request) {
 
         try {
-            User user = userDao.getUserByLogin(request.getUser(), request.getPassword());
+            ResultSet RSuser = userDao.getUserByLogin(request.getUser(), request.getPassword());
+
+            User user = userDBMapper.getSingle(RSuser);
 
             if (user == null) {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             }
 
-            LoginResponse response = userResponseMapper.mapSingleUserToLoginResponse(user);
+            LoginResponse response = userResponseMapper.mapToResponse(user);
 
             return Response.status(Response.Status.CREATED).entity(response).build();
 

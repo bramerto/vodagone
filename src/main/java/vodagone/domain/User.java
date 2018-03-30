@@ -1,6 +1,6 @@
 package vodagone.domain;
 
-public class User {
+public class User implements IMappable {
     private int id;
     private String user;
     private String password;

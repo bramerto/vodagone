@@ -2,7 +2,7 @@ package vodagone.domain;
 
 import java.util.Date;
 
-public class Subscription {
+public class Subscription implements IMappable {
     private int id;
     private String aanbieder;
     private String dienst;

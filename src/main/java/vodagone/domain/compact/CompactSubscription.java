@@ -1,6 +1,8 @@
-package vodagone.dto;
+package vodagone.domain.compact;
 
-public class CompactSubscription {
+import vodagone.domain.IMappable;
+
+public class CompactSubscription implements IMappable {
     private int id;
     private String aanbieder;
     private String dienst;

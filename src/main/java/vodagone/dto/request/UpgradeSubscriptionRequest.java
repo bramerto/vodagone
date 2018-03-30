@@ -1,6 +1,6 @@
 package vodagone.dto.request;
 
-public class UpgradeSubscriptionRequest {
+public class UpgradeSubscriptionRequest implements IRequest {
     private String verdubbeling;
 
     public String getVerdubbeling() {

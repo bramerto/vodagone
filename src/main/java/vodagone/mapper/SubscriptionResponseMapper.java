@@ -1,7 +1,7 @@
 package vodagone.mapper;
 
 import vodagone.domain.Subscription;
-import vodagone.dto.CompactSubscription;
+import vodagone.domain.compact.CompactSubscription;
 import vodagone.dto.request.AddSubscriptionRequest;
 import vodagone.dto.response.SubscriptionResponse;
 import vodagone.dto.response.SubscriptionsForUserResponse;
@@ -9,7 +9,7 @@ import vodagone.dto.response.SubscriptionsForUserResponse;
 import java.util.ArrayList;
 
 public class SubscriptionResponseMapper {
-    public SubscriptionResponse mapSingleSubscriptionToResponse(Subscription subscription) {
+    public SubscriptionResponse mapToResponse(Subscription subscription) {
         SubscriptionResponse subscriptionResponse = new SubscriptionResponse();
 
         SubscriptionResponse response = new SubscriptionResponse();
@@ -25,7 +25,7 @@ public class SubscriptionResponseMapper {
         return subscriptionResponse;
     }
 
-    public Subscription mapSingleAddRequestToSubscription(AddSubscriptionRequest request) {
+    public Subscription mapToSubscription(AddSubscriptionRequest request) {
         Subscription subscription = new Subscription();
         subscription.setId(request.getId());
         subscription.setAanbieder(request.getAanbieder());
@@ -34,9 +34,9 @@ public class SubscriptionResponseMapper {
         return subscription;
     }
 
-    public SubscriptionsForUserResponse mapSubscriptionListToCompactResponse(ArrayList<Subscription> subscriptions) {
+    public SubscriptionsForUserResponse mapToCompactResponse(ArrayList<Subscription> subscriptions) {
         ArrayList<CompactSubscription> compactSubscriptions = new ArrayList<>();
-        int totalPrice = 0;
+        double totalPrice = 0;
 
         for (Subscription sub : subscriptions) {
             CompactSubscription compactSubscription = new CompactSubscription();
@@ -56,7 +56,7 @@ public class SubscriptionResponseMapper {
         return subscriptionsForUserResponse;
     }
 
-    public ArrayList<CompactSubscription> mapSubscriptionListToCompactList(ArrayList<Subscription> subscriptions) {
+    public ArrayList<CompactSubscription> mapToCompactList(ArrayList<Subscription> subscriptions) {
         ArrayList<CompactSubscription> compactSubscriptions = new ArrayList<>();
 
         for (Subscription subscription : subscriptions) {

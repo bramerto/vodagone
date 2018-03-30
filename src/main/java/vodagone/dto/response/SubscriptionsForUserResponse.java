@@ -1,10 +1,10 @@
 package vodagone.dto.response;
 
-import vodagone.dto.CompactSubscription;
+import vodagone.domain.compact.CompactSubscription;
 
 import java.util.ArrayList;
 
-public class SubscriptionsForUserResponse {
+public class SubscriptionsForUserResponse implements IResponse {
     private double totalPrice;
     private ArrayList<CompactSubscription> abonnementen;
 

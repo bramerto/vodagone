@@ -1,14 +1,14 @@
 package vodagone.mapper;
 
 import vodagone.domain.User;
-import vodagone.dto.CompactUser;
+import vodagone.domain.compact.CompactUser;
 import vodagone.dto.response.LoginResponse;
 
 import java.util.ArrayList;
 
 public class UserResponseMapper {
 
-    public LoginResponse mapSingleUserToLoginResponse(User user) {
+    public LoginResponse mapToResponse(User user) {
         LoginResponse loginResponse = new LoginResponse();
 
         loginResponse.setToken(user.getToken());
@@ -17,7 +17,7 @@ public class UserResponseMapper {
         return loginResponse;
     }
 
-    public ArrayList<CompactUser> mapUserListToCompactList(ArrayList<User> users) {
+    public ArrayList<CompactUser> mapToCompactList(ArrayList<User> users) {
         ArrayList<CompactUser> compactUsers = new ArrayList<>();
 
         for (User user : users) {

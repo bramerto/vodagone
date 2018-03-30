@@ -1,15 +1,11 @@
 package vodagone.store;
 
-import javax.annotation.ManagedBean;
-import javax.enterprise.inject.Produces;
-import javax.inject.Named;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-@ManagedBean
-class MySqlConnect {
+class MySqlConnect implements IDatabaseConnect {
 
     private final String DATABASE_DRIVER = "com.mysql.jdbc.Driver";
     private final String DATABASE_URL = "jdbc:mysql://localhost:3306/vodagone";
@@ -30,9 +26,7 @@ class MySqlConnect {
         return properties;
     }
 
-    @Produces
-    @Named("connection")
-    Connection connect() {
+    public Connection connect() {
         if (connection == null) {
             try {
                 Class.forName(DATABASE_DRIVER);

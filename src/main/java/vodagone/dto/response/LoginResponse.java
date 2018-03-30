@@ -1,6 +1,6 @@
 package vodagone.dto.response;
 
-public class LoginResponse {
+public class LoginResponse implements IResponse {
     private String token;
     private String user;
 

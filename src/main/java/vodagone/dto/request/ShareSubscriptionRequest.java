@@ -1,6 +1,6 @@
 package vodagone.dto.request;
 
-public class ShareSubscriptionRequest {
+public class ShareSubscriptionRequest implements IRequest {
     private int id;
 
     public int getId() {

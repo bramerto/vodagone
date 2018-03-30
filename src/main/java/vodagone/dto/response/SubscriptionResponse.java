@@ -2,7 +2,7 @@ package vodagone.dto.response;
 
 import java.util.Date;
 
-public class SubscriptionResponse {
+public class SubscriptionResponse implements IResponse {
     private int id;
     private String aanbieder;
     private String dienst;

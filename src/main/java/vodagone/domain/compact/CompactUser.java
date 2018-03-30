@@ -1,6 +1,8 @@
-package vodagone.dto;
+package vodagone.domain.compact;
 
-public class CompactUser {
+import vodagone.domain.IMappable;
+
+public class CompactUser implements IMappable {
     private int id;
     private String name;
     private String email;

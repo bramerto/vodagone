@@ -1,4 +1,4 @@
-package vodagone.mapper;
+package vodagone.mapper.DB;
 
 import vodagone.domain.Address;
 import vodagone.domain.User;
@@ -7,26 +7,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class UserDBMapper {
-    public ArrayList<User> getUsersList(ResultSet rs) throws SQLException {
+public class UserDBMapper implements IDBMapper {
+    public ArrayList<User> getList(ResultSet rs) throws SQLException {
         if (!rs.next()) return null;
 
         rs.beforeFirst();
         ArrayList<User> users = new ArrayList<>();
 
         while (rs.next()) {
-            users.add(setUser(rs));
+            users.add(map(rs));
         }
 
         return users;
     }
 
-    public User getSingleUser(ResultSet rs) throws SQLException {
+    public User getSingle(ResultSet rs) throws SQLException {
         if (!rs.next()) return null;
-        return setUser(rs);
+        return map(rs);
     }
 
-    private User setUser(ResultSet checkedRS) throws SQLException {
+    public User map(ResultSet checkedRS) throws SQLException {
         User user = new User();
         Address address = new Address();
 

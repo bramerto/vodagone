@@ -1,6 +1,6 @@
 package vodagone.dto.request;
 
-public class AddSubscriptionRequest {
+public class AddSubscriptionRequest implements IRequest {
     private int id;
     private String aanbieder;
     private String dienst;
