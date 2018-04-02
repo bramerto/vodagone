@@ -1,13 +1,15 @@
 package vodagone.service;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+/**
+ * Services are facade controllers in this application and thus entail an integration test.
+ * Integration tests are not part of the assignment.
+ */
 
+@Ignore
 public class SubscriberServiceTest {
-
 
     @Test
     public void getAllSubscribers() {

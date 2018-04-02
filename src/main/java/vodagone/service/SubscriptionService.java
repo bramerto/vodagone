@@ -7,7 +7,7 @@ import vodagone.domain.compact.CompactSubscription;
 import vodagone.dto.request.AddSubscriptionRequest;
 import vodagone.dto.request.UpgradeSubscriptionRequest;
 import vodagone.dto.response.SubscriptionResponse;
-import vodagone.dto.response.SubscriptionsForUserResponse;
+import vodagone.dto.response.SubscriptionsUserResponse;
 import vodagone.mapper.DB.SubscriptionDBMapper;
 import vodagone.mapper.DB.UserDBMapper;
 import vodagone.store.SubscriptionDao;
@@ -53,7 +53,7 @@ public class SubscriptionService {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
 
-            SubscriptionsForUserResponse response = subscriptionResponseMapper.mapToCompactResponse(subscriptions);
+            SubscriptionsUserResponse response = subscriptionResponseMapper.mapToCompactResponse(subscriptions);
 
             return Response.status(Response.Status.OK).entity(response).build();
 
@@ -76,14 +76,14 @@ public class SubscriptionService {
             Subscription subscription = subscriptionResponseMapper.mapToSubscription(request);
             subscriptionDao.addSubscription(subscription);
 
-            ResultSet RSsubscriptions = subscriptionDao.getAllSubscriptions();
+            ResultSet RSsubscriptions = subscriptionDao.getAll();
             ArrayList<Subscription> subscriptions = subscriptionDBMapper.getList(RSsubscriptions);
 
             if (subscriptions == null) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
 
-            SubscriptionsForUserResponse response = subscriptionResponseMapper.mapToCompactResponse(subscriptions);
+            SubscriptionsUserResponse response = subscriptionResponseMapper.mapToCompactResponse(subscriptions);
 
             return Response.status(Response.Status.CREATED).entity(response).build();
 
@@ -204,7 +204,7 @@ public class SubscriptionService {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             }
 
-            ResultSet RSsubscriptions = (filter != null) ? subscriptionDao.getAllSubscriptions(filter) : subscriptionDao.getAllSubscriptions();
+            ResultSet RSsubscriptions = (filter != null) ? subscriptionDao.getAll(filter) : subscriptionDao.getAll();
             ArrayList<Subscription> subscriptions = subscriptionDBMapper.getList(RSsubscriptions);
 
             if (subscriptions == null) {

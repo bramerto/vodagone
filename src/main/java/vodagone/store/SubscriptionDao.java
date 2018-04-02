@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class SubscriptionDao {
+public class SubscriptionDao implements IDao {
 
     private Connection connection;
     private String defaultSelect;
@@ -24,7 +24,7 @@ public class SubscriptionDao {
         this.connection = databaseConnect.connect();
     }
 
-    public ResultSet getAllSubscriptions(String filter) throws SQLException {
+    public ResultSet getAll(String filter) throws SQLException {
         String sql = defaultSelect + "WHERE a.aanbieder = ? OR a.dienst = ?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -34,7 +34,7 @@ public class SubscriptionDao {
         return preparedStatement.executeQuery();
     }
 
-    public ResultSet getAllSubscriptions() throws SQLException {
+    public ResultSet getAll() throws SQLException {
         String sql = defaultSelect;
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);

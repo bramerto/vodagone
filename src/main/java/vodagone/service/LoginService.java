@@ -27,7 +27,6 @@ public class LoginService {
 
         try {
             ResultSet RSuser = userDao.getUserByLogin(request.getUser(), request.getPassword());
-
             User user = userDBMapper.getSingle(RSuser);
 
             if (user == null) {

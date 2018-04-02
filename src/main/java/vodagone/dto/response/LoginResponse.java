@@ -11,4 +11,12 @@ public class LoginResponse implements IResponse {
     public void setUser(String user) {
         this.user = user;
     }
+
+    public String getUser() {
+        return user;
+    }
+
+    public String getToken() {
+        return token;
+    }
 }

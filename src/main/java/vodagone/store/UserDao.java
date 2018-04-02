@@ -5,13 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserDao {
+public class UserDao implements IDao {
 
     private Connection connection;
 
     public UserDao() {
         IDatabaseConnect databaseConnect = new MySqlConnect();
-
         this.connection = databaseConnect.connect();
     }
 
@@ -33,14 +32,14 @@ public class UserDao {
     }
 
     public ResultSet getUserById(int id) throws SQLException {
-        String sql = "SELECT * FROM abbonementen WHERE id = ?";
+        String sql = "SELECT * FROM user WHERE id = ?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setInt(1, id);
         return preparedStatement.executeQuery();
     }
 
-    public ResultSet getAllUsers() throws SQLException {
+    public ResultSet getAll() throws SQLException {
 
         String sql = "SELECT * FROM user";
 

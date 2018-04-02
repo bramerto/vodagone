@@ -4,7 +4,7 @@ import vodagone.domain.compact.CompactSubscription;
 
 import java.util.ArrayList;
 
-public class SubscriptionsForUserResponse implements IResponse {
+public class SubscriptionsUserResponse implements IResponse {
     private double totalPrice;
     private ArrayList<CompactSubscription> abonnementen;
 
@@ -13,5 +13,13 @@ public class SubscriptionsForUserResponse implements IResponse {
     }
     public void setAbonnementen(ArrayList<CompactSubscription> abonnementen) {
         this.abonnementen = abonnementen;
+    }
+
+    public ArrayList<CompactSubscription> getAbonnementen() {
+        return abonnementen;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
     }
 }

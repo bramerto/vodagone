@@ -4,29 +4,30 @@ import vodagone.domain.Subscription;
 import vodagone.domain.compact.CompactSubscription;
 import vodagone.dto.request.AddSubscriptionRequest;
 import vodagone.dto.response.SubscriptionResponse;
-import vodagone.dto.response.SubscriptionsForUserResponse;
+import vodagone.dto.response.SubscriptionsUserResponse;
 
 import java.util.ArrayList;
 
 public class SubscriptionResponseMapper {
     public SubscriptionResponse mapToResponse(Subscription subscription) {
+
         SubscriptionResponse subscriptionResponse = new SubscriptionResponse();
 
-        SubscriptionResponse response = new SubscriptionResponse();
-        response.setId(subscription.getId());
-        response.setAanbieder(subscription.getAanbieder());
-        response.setDienst(subscription.getDienst());
-        response.setPrijs(subscription.getPrijs());
-        response.setStartDatum(subscription.getStartDatum());
-        response.setVerdubbeling(subscription.getVerdubbeling());
-        response.setDeelbaar(subscription.isDeelbaar());
-        response.setStatus(subscription.getStatus());
+        subscriptionResponse.setId(subscription.getId());
+        subscriptionResponse.setAanbieder(subscription.getAanbieder());
+        subscriptionResponse.setDienst(subscription.getDienst());
+        subscriptionResponse.setPrijs(subscription.getPrijs());
+        subscriptionResponse.setStartDatum(subscription.getStartDatum());
+        subscriptionResponse.setVerdubbeling(subscription.getVerdubbeling());
+        subscriptionResponse.setDeelbaar(subscription.isDeelbaar());
+        subscriptionResponse.setStatus(subscription.getStatus());
 
         return subscriptionResponse;
     }
 
     public Subscription mapToSubscription(AddSubscriptionRequest request) {
         Subscription subscription = new Subscription();
+
         subscription.setId(request.getId());
         subscription.setAanbieder(request.getAanbieder());
         subscription.setDienst(request.getDienst());
@@ -34,26 +35,26 @@ public class SubscriptionResponseMapper {
         return subscription;
     }
 
-    public SubscriptionsForUserResponse mapToCompactResponse(ArrayList<Subscription> subscriptions) {
+    public SubscriptionsUserResponse mapToCompactResponse(ArrayList<Subscription> subscriptions) {
         ArrayList<CompactSubscription> compactSubscriptions = new ArrayList<>();
         double totalPrice = 0;
 
         for (Subscription sub : subscriptions) {
             CompactSubscription compactSubscription = new CompactSubscription();
 
+            compactSubscription.setId(sub.getId());
             compactSubscription.setAanbieder(sub.getAanbieder());
             compactSubscription.setDienst(sub.getDienst());
-            compactSubscription.setId(sub.getId());
 
             compactSubscriptions.add(compactSubscription);
             totalPrice += sub.getPricetag();
         }
 
-        SubscriptionsForUserResponse subscriptionsForUserResponse = new SubscriptionsForUserResponse();
-        subscriptionsForUserResponse.setAbonnementen(compactSubscriptions);
-        subscriptionsForUserResponse.setTotalPrice(totalPrice);
+        SubscriptionsUserResponse subscriptionsUserResponse = new SubscriptionsUserResponse();
+        subscriptionsUserResponse.setAbonnementen(compactSubscriptions);
+        subscriptionsUserResponse.setTotalPrice(totalPrice);
 
-        return subscriptionsForUserResponse;
+        return subscriptionsUserResponse;
     }
 
     public ArrayList<CompactSubscription> mapToCompactList(ArrayList<Subscription> subscriptions) {

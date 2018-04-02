@@ -1,5 +1,6 @@
 package vodagone.store;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.mockito.Mockito.mock;
@@ -16,6 +17,7 @@ import static org.mockito.Mockito.when;
  * if any future features are implemented or implemented, you can add or change them here
  */
 
+@Ignore
 public class MySqlConnectTest {
 
     @Test

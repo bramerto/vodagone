@@ -41,7 +41,7 @@ public class SubscriberService {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             }
 
-            ResultSet RSusers = userDao.getAllUsers();
+            ResultSet RSusers = userDao.getAll();
 
             ArrayList<User> users = userDBMapper.getList(RSusers);
 
