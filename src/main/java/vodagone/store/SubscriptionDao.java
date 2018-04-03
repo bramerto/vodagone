@@ -2,26 +2,27 @@ package vodagone.store;
 
 import vodagone.domain.Subscription;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class SubscriptionDao implements IDao {
+public class SubscriptionDao implements ISubscriptionDao {
 
     private Connection connection;
     private String defaultSelect;
 
-    public SubscriptionDao() {
+    @Inject
+    public SubscriptionDao(@Named("connection") Connection connection) {
         defaultSelect = "SELECT a.id, a.aanbieder, a.dienst, a.prijs, a.deelbaar, " +
                         "ua.price, ua.status, ua.startDatum, ua.verdubbeling " +
                         "FROM abonnementen AS a " +
                         "INNER JOIN userabonnementen AS ua " +
                         "ON a.id = ua.abbonementid ";
 
-        IDatabaseConnect databaseConnect = new MySqlConnect();
-
-        this.connection = databaseConnect.connect();
+        this.connection = connection;
     }
 
     public ResultSet getAll(String filter) throws SQLException {
@@ -70,7 +71,7 @@ public class SubscriptionDao implements IDao {
     }
 
     public void addSubscription(Subscription subscription) throws SQLException {
-        String sql = "INSERT OR REPLACE INTO abonnementen(id, aanbieder, dienst) " +
+        String sql = "INSERT INTO abonnementen(id, aanbieder, dienst) " +
                      "VALUES(?, ?, ?) ";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);

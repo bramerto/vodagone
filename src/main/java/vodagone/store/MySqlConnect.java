@@ -1,5 +1,7 @@
 package vodagone.store;
 
+import javax.enterprise.inject.Produces;
+import javax.inject.Named;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -26,6 +28,8 @@ class MySqlConnect implements IDatabaseConnect {
         return properties;
     }
 
+    @Produces
+    @Named("connection")
     public Connection connect() {
         if (connection == null) {
             try {

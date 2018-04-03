@@ -1,17 +1,19 @@
 package vodagone.store;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserDao implements IDao {
+public class UserDao implements IUserDao {
 
     private Connection connection;
 
-    public UserDao() {
-        IDatabaseConnect databaseConnect = new MySqlConnect();
-        this.connection = databaseConnect.connect();
+    @Inject
+    public UserDao(@Named("connection") Connection connection) {
+        this.connection = connection;
     }
 
     public ResultSet getUserByToken(String token) throws SQLException {

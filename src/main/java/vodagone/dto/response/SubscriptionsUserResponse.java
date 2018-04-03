@@ -19,6 +19,10 @@ public class SubscriptionsUserResponse implements IResponse {
         return abonnementen;
     }
 
+    public void addEntryToList(CompactSubscription compactSubscription) {
+        abonnementen.add(compactSubscription);
+    }
+
     public double getTotalPrice() {
         return totalPrice;
     }

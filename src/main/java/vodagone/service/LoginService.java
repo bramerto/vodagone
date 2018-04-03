@@ -5,8 +5,9 @@ import vodagone.dto.request.LoginRequest;
 import vodagone.dto.response.LoginResponse;
 import vodagone.mapper.DB.UserDBMapper;
 import vodagone.mapper.UserResponseMapper;
-import vodagone.store.UserDao;
+import vodagone.store.IUserDao;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -16,9 +17,12 @@ import java.sql.SQLException;
 @Path("/login")
 public class LoginService {
 
-    private UserDao userDao = new UserDao();
-    private UserResponseMapper userResponseMapper = new UserResponseMapper();
-    private UserDBMapper userDBMapper = new UserDBMapper();
+    @Inject
+    private IUserDao userDao;
+    @Inject
+    private UserResponseMapper userResponseMapper;
+    @Inject
+    private UserDBMapper userDBMapper;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
