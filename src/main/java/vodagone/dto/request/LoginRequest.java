@@ -11,4 +11,12 @@ public class LoginRequest implements IRequest {
     public String getPassword() {
         return password;
     }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

@@ -59,7 +59,7 @@ public class SubscriberService {
     public Response shareSubscription(@PathParam("id") int id, @QueryParam("token") String token,
                                       ShareSubscriptionRequest request) {
         try {
-            if (!validation.checkToken(token) || id == 0) {
+            if (!validation.checkToken(token) || !validation.checkId(id)) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
@@ -71,7 +71,7 @@ public class SubscriberService {
             Subscription subscription = subscriptionController.checkIfShareable(request.getId(), user.getId());
 
             if (subscription == null) {
-                return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+                return Response.status(Response.Status.NOT_FOUND).build();
             }
 
             userController.shareSubscription(subscription.getId(), token);

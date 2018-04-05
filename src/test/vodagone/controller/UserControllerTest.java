@@ -34,6 +34,8 @@ public class UserControllerTest {
     private UserResponseMapper userResponseMapper;
     @Mock
     private SubscriptionDao subscriptionDao;
+    @Mock
+    private ArrayList<User> userList;
 
     @Before
     public void setUp() {
@@ -48,11 +50,16 @@ public class UserControllerTest {
             user.setUser("John");
             user.setPassword("password123");
 
+            ResultSet resultSet = mock(ResultSet.class);
+
+            when(userDao.getUserByLogin(user.getUser(), user.getPassword())).thenReturn(resultSet);
+
             //TEST
             userController.AuthenticateUser(user.getUser(), user.getPassword());
 
             //VERIFY
             verify(userDao).getUserByLogin(user.getUser(), user.getPassword());
+            verify(userDBMapper).getSingle(resultSet);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -65,11 +72,16 @@ public class UserControllerTest {
             //SETUP TEST
             String token = "1234";
 
+            ResultSet resultSet = mock(ResultSet.class);
+
+            when(userDao.getUserByToken(token)).thenReturn(resultSet);
+
             //TEST
             userController.AuthenticateUser(token);
 
             //VERIFY
             verify(userDao).getUserByToken(token);
+            verify(userDBMapper).getSingle(resultSet);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -84,11 +96,14 @@ public class UserControllerTest {
             ResultSet resultSet = mock(ResultSet.class);
 
             //TEST
-            when(userDBMapper.getList(resultSet)).thenReturn(new ArrayList<>());
+            when(userDao.getAllUsers()).thenReturn(resultSet);
+            when(userDBMapper.getList(resultSet)).thenReturn(userList);
+
             userController.getAllUsers();
 
             //VERIFY
             verify(userDao).getAllUsers();
+            verify(userDBMapper).getList(resultSet);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -98,16 +113,17 @@ public class UserControllerTest {
     @Test
     public void getAllUsersFail() {
         try {
-            //SETUP
             ResultSet resultSet = mock(ResultSet.class);
 
             //TEST
-            when(userDao.getAllUsers()).thenReturn(null); //TODO does not cover the null part of this method
+            when(userDao.getAllUsers()).thenReturn(resultSet);
             when(userDBMapper.getList(resultSet)).thenReturn(null);
+
             userController.getAllUsers();
 
             //VERIFY
             verify(userDao).getAllUsers();
+            verify(userDBMapper).getList(resultSet);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -118,17 +134,22 @@ public class UserControllerTest {
     public void shareSubscription() {
         try {
             //SETUP
+            User user = new User();
+            user.setId(1);
+
             ResultSet resultSet = mock(ResultSet.class);
             String token = "1234";
             int subscriptionid = 1;
 
             //TEST
             when(userDao.getUserByToken(token)).thenReturn(resultSet);
-            when(userDBMapper.getSingle(resultSet)).thenReturn(new User());
+            when(userDBMapper.getSingle(resultSet)).thenReturn(user);
+
             userController.shareSubscription(subscriptionid, token);
 
             //VERIFY
             verify(userDao).getUserByToken(token);
+            verify(subscriptionDao).shareSubscription(user.getId(), subscriptionid);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -137,7 +158,11 @@ public class UserControllerTest {
 
     @Test
     public void getLogin() {
+        //SETUP
         User user = new User();
+        //TEST
         userController.getLogin(user);
+        //VERIFY
+        verify(userResponseMapper).mapToResponse(user);
     }
 }

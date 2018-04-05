@@ -81,7 +81,7 @@ public class SubscriptionService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSubscription(@PathParam("id") int id, @QueryParam("token") String token) {
         try {
-            if (!validation.checkToken(token) || id == 0) {
+            if (!validation.checkToken(token) || !validation.checkId(id)) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
@@ -108,7 +108,7 @@ public class SubscriptionService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response terminateSubscription(@PathParam("id") int id, @QueryParam("token") String token) {
         try {
-            if (!validation.checkToken(token) || id == 0) {
+            if (!validation.checkToken(token) || !validation.checkId(id)) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
@@ -137,7 +137,7 @@ public class SubscriptionService {
     public Response upgradeSubscription(@PathParam("id") int id, @QueryParam("token") String token,
                                         UpgradeSubscriptionRequest request) {
         try {
-            if (!validation.checkToken(token) || id == 0) {
+            if (!validation.checkToken(token) || !validation.checkId(id)) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
 

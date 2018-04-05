@@ -36,4 +36,25 @@ public class ValidationTest {
 
         assertFalse(checked);
     }
+
+    @Test
+    public void checkIdIsNotEmpty() {
+        Validation validation = new Validation();
+        int id = 1;
+
+        boolean checked = validation.checkId(id);
+
+        assertTrue(checked);
+    }
+
+
+    @Test
+    public void checkIdIsEmpty() {
+        Validation validation = new Validation();
+        int id = 0;
+
+        boolean checked = validation.checkId(id);
+
+        assertFalse(checked);
+    }
 }

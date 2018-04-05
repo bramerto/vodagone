@@ -29,10 +29,6 @@ public class User implements IMappable {
         return email;
     }
 
-    public Address getAddress() {
-        return address;
-    }
-
     public String getToken() {
         return token;
     }

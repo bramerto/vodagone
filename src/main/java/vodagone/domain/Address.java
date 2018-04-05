@@ -5,11 +5,6 @@ public class Address {
     private String postalcode;
     private String city;
 
-    @Override
-    public String toString() {
-        return street + ", " + postalcode + ", " + city;
-    }
-
     public void resolveAddress(String fullAddress) {
         String[] splittedAdress = fullAddress.split(", ");
         this.street = splittedAdress[0];

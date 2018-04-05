@@ -31,8 +31,8 @@ public class SubscriptionController {
         ResultSet RSsubscriptions = subscriptionDao.getAllSubscriptions();
         ArrayList<Subscription> subscriptions = subscriptionDBMapper.getList(RSsubscriptions);
 
-        if (subscription == null) {
-            return null;
+        if (subscriptions == null) {
+            subscriptions = new ArrayList<>();
         }
 
         SubscriptionsUserResponse response = subscriptionResponseMapper.mapToCompactResponse(subscriptions);
@@ -53,8 +53,7 @@ public class SubscriptionController {
     }
 
     public SubscriptionResponse getSubscription(int id, User user) throws SQLException {
-        ResultSet RSsubscription = subscriptionDao.getSubscription(id, user.getId());
-        Subscription subscription = subscriptionDBMapper.getSingle(RSsubscription);
+        Subscription subscription = getSubscription(id, user.getId());
 
         if (subscription == null) {
             return null;
@@ -71,9 +70,8 @@ public class SubscriptionController {
         }
 
         subscriptionDao.terminateSubscription(subscription.getId());
-        ResultSet RSsubscription = subscriptionDao.getSubscription(id, user.getId());
 
-        return subscriptionDBMapper.getSingle(RSsubscription);
+        return getSubscription(id, user.getId());
     }
 
     public void upgradeSubscription(int id, int userid, String verdubbling) throws SQLException {
@@ -81,7 +79,9 @@ public class SubscriptionController {
     }
 
     public ArrayList<CompactSubscription> getAllSubscriptions(String filter) throws SQLException {
-        ResultSet RSsubscriptions = (filter != null) ? subscriptionDao.getAllSubscriptions(filter) : subscriptionDao.getAllSubscriptions();
+        ResultSet RSsubscriptions = (filter != null && !filter.isEmpty()) ?
+                subscriptionDao.getAllSubscriptions(filter) :
+                subscriptionDao.getAllSubscriptions();
         ArrayList<Subscription> subscriptions = subscriptionDBMapper.getList(RSsubscriptions);
 
         if (subscriptions == null) {
@@ -93,7 +93,9 @@ public class SubscriptionController {
 
     public Subscription checkIfShareable(int subscriptionId, int userId) throws SQLException {
         Subscription subscription = getSubscription(subscriptionId, userId);
-        return (subscription.isDeelbaar()) ? subscription : null;
+        return (subscription.isDeelbaar()) ?
+                subscription :
+                null;
     }
 
     private Subscription getSubscription(int id, int userId) throws SQLException {

@@ -23,6 +23,7 @@ public class SubscriptionsUserResponse implements IResponse {
         abonnementen.add(compactSubscription);
     }
 
+
     public double getTotalPrice() {
         return totalPrice;
     }
