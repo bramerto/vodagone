@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public interface ISubscriptionDao {
-    ResultSet getAll() throws SQLException;
-    ResultSet getAll(String filter) throws SQLException;
+    ResultSet getAllSubscriptions() throws SQLException;
+    ResultSet getAllSubscriptions(String filter) throws SQLException;
     ResultSet getAllSubscriptionsByUser(int userId) throws SQLException;
     ResultSet getSubscription(int id, int authenticatedUserId) throws SQLException;
     void shareSubscription(int sharedToUserId, int toBeSharedSubscriptionId) throws SQLException;

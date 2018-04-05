@@ -33,15 +33,7 @@ public class UserDao implements IUserDao {
         return preparedStatement.executeQuery();
     }
 
-    public ResultSet getUserById(int id) throws SQLException {
-        String sql = "SELECT * FROM user WHERE id = ?";
-
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setInt(1, id);
-        return preparedStatement.executeQuery();
-    }
-
-    public ResultSet getAll() throws SQLException {
+    public ResultSet getAllUsers() throws SQLException {
 
         String sql = "SELECT * FROM user";
 

@@ -25,7 +25,7 @@ public class SubscriptionDao implements ISubscriptionDao {
         this.connection = connection;
     }
 
-    public ResultSet getAll(String filter) throws SQLException {
+    public ResultSet getAllSubscriptions(String filter) throws SQLException {
         String sql = defaultSelect + "WHERE a.aanbieder = ? OR a.dienst = ?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -35,7 +35,7 @@ public class SubscriptionDao implements ISubscriptionDao {
         return preparedStatement.executeQuery();
     }
 
-    public ResultSet getAll() throws SQLException {
+    public ResultSet getAllSubscriptions() throws SQLException {
         String sql = defaultSelect;
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);

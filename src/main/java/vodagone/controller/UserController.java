@@ -2,6 +2,7 @@ package vodagone.controller;
 
 import vodagone.domain.User;
 import vodagone.domain.compact.CompactUser;
+import vodagone.dto.response.LoginResponse;
 import vodagone.mapper.DB.UserDBMapper;
 import vodagone.mapper.UserResponseMapper;
 import vodagone.store.IUserDao;
@@ -23,15 +24,23 @@ public class UserController {
     @Inject
     private SubscriptionDao subscriptionDao;
 
+    public User AuthenticateUser(String user, String password) throws SQLException {
+        ResultSet resultSet = userDao.getUserByLogin(user, password);
+        return userDBMapper.getSingle(resultSet);
+    }
+
     public User AuthenticateUser(String token) throws SQLException {
-        ResultSet RSuser = userDao.getUserByToken(token);
-        return userDBMapper.getSingle(RSuser);
+        ResultSet resultSet = userDao.getUserByToken(token);
+        return userDBMapper.getSingle(resultSet);
+    }
+
+    public LoginResponse getLogin(User user) {
+        return userResponseMapper.mapToResponse(user);
     }
 
     public ArrayList<CompactUser> getAllUsers() throws SQLException {
-        ResultSet RSusers = userDao.getAll();
-
-        ArrayList<User> users = userDBMapper.getList(RSusers);
+        ResultSet resultSet = userDao.getAllUsers();
+        ArrayList<User> users = userDBMapper.getList(resultSet);
 
         if (users == null) {
             return null;
@@ -40,11 +49,10 @@ public class UserController {
         return userResponseMapper.mapToCompactList(users);
     }
 
-    public boolean shareSubscription(int subscriptionid, String token) throws SQLException {
-        ResultSet RSsharedToUser = userDao.getUserByToken(token);
-        User sharedToUser = userDBMapper.getSingle(RSsharedToUser);
+    public void shareSubscription(int subscriptionid, String token) throws SQLException {
+        ResultSet resultSet = userDao.getUserByToken(token);
+        User sharedToUser = userDBMapper.getSingle(resultSet);
 
         subscriptionDao.shareSubscription(sharedToUser.getId(), subscriptionid);
-        return true;
     }
 }

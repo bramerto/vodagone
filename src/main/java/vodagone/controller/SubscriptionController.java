@@ -28,8 +28,7 @@ public class SubscriptionController {
         Subscription subscription = subscriptionResponseMapper.mapToSubscription(request);
         subscriptionDao.addSubscription(subscription);
 
-        ResultSet RSsubscriptions = subscriptionDao.getAll();
-
+        ResultSet RSsubscriptions = subscriptionDao.getAllSubscriptions();
         ArrayList<Subscription> subscriptions = subscriptionDBMapper.getList(RSsubscriptions);
 
         if (subscription == null) {
@@ -82,7 +81,7 @@ public class SubscriptionController {
     }
 
     public ArrayList<CompactSubscription> getAllSubscriptions(String filter) throws SQLException {
-        ResultSet RSsubscriptions = (filter != null) ? subscriptionDao.getAll(filter) : subscriptionDao.getAll();
+        ResultSet RSsubscriptions = (filter != null) ? subscriptionDao.getAllSubscriptions(filter) : subscriptionDao.getAllSubscriptions();
         ArrayList<Subscription> subscriptions = subscriptionDBMapper.getList(RSsubscriptions);
 
         if (subscriptions == null) {

@@ -1,28 +1,21 @@
 package vodagone.service;
 
+import vodagone.controller.UserController;
 import vodagone.domain.User;
 import vodagone.dto.request.LoginRequest;
 import vodagone.dto.response.LoginResponse;
-import vodagone.mapper.DB.UserDBMapper;
-import vodagone.mapper.UserResponseMapper;
-import vodagone.store.IUserDao;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Path("/login")
 public class LoginService {
 
     @Inject
-    private IUserDao userDao;
-    @Inject
-    private UserResponseMapper userResponseMapper;
-    @Inject
-    private UserDBMapper userDBMapper;
+    private UserController userController;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -30,14 +23,13 @@ public class LoginService {
     public Response login(LoginRequest request) {
 
         try {
-            ResultSet RSuser = userDao.getUserByLogin(request.getUser(), request.getPassword());
-            User user = userDBMapper.getSingle(RSuser);
+            User user = userController.AuthenticateUser(request.getUser(), request.getPassword());
 
             if (user == null) {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             }
 
-            LoginResponse response = userResponseMapper.mapToResponse(user);
+            LoginResponse response = userController.getLogin(user);
 
             return Response.status(Response.Status.CREATED).entity(response).build();
 
