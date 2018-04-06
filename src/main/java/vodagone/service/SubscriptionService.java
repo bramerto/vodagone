@@ -64,6 +64,12 @@ public class SubscriptionService {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
+            User user = userController.AuthenticateUser(token);
+
+            if (user == null) {
+                return Response.status(Response.Status.UNAUTHORIZED).build();
+            }
+
             SubscriptionsUserResponse response = subscriptionController.addSubscription(request);
 
             return (response == null) ?

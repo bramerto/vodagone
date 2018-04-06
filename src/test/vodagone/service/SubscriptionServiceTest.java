@@ -10,11 +10,15 @@ import vodagone.controller.SubscriptionController;
 import vodagone.controller.UserController;
 import vodagone.domain.Subscription;
 import vodagone.domain.User;
+import vodagone.domain.compact.CompactSubscription;
+import vodagone.dto.request.AddSubscriptionRequest;
 import vodagone.dto.request.UpgradeSubscriptionRequest;
 import vodagone.dto.response.SubscriptionResponse;
+import vodagone.dto.response.SubscriptionsUserResponse;
 
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -32,14 +36,215 @@ public class SubscriptionServiceTest {
     private UserController userController;
     @Mock
     private Validation validation;
+    @Mock
+    private ArrayList<CompactSubscription> subscriptionList;
 
     @Test
-    public void getSubscriptionsForUser() {
+    public void getSubscriptionsForUserSucceed() {
+        //SETUP
+        String token = "test";
+        User user = mock(User.class);
+        SubscriptionsUserResponse subscriptionsUserResponse = mock(SubscriptionsUserResponse.class);
 
+        try {
+            when(validation.checkToken(token)).thenReturn(true);
+            when(userController.AuthenticateUser(token)).thenReturn(user);
+            when(subscriptionController.getSubscriptionsForUser(user)).thenReturn(subscriptionsUserResponse);
+
+            //TEST
+            Response response = subscriptionService.getSubscriptions(token);
+
+            //VERIFY
+            verify(subscriptionController).getSubscriptionsForUser(user);
+            assertEquals(Response.Status.OK, response.getStatusInfo());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void addSubscription() {
+    public void getSubscriptionsForUserTokenFail() {
+        //SETUP
+        String token = "test";
+
+        when(validation.checkToken(token)).thenReturn(false);
+
+        //TEST
+        Response response = subscriptionService.getSubscriptions(token);
+
+        //VERIFY
+        assertEquals(Response.Status.BAD_REQUEST, response.getStatusInfo());
+    }
+
+    @Test
+    public void getSubscriptionsForUserUnauthorized() {
+        //SETUP
+        String token = "test";
+
+        try {
+            when(validation.checkToken(token)).thenReturn(true);
+            when(userController.AuthenticateUser(token)).thenReturn(null);
+
+            //TEST
+            Response response = subscriptionService.getSubscriptions(token);
+
+            //VERIFY
+            assertEquals(Response.Status.UNAUTHORIZED, response.getStatusInfo());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void getSubscriptionsForUserNotFound() {
+        //SETUP
+        String token = "test";
+        User user = mock(User.class);
+
+        try {
+            when(validation.checkToken(token)).thenReturn(true);
+            when(userController.AuthenticateUser(token)).thenReturn(user);
+            when(subscriptionController.getSubscriptionsForUser(user)).thenReturn(null);
+
+            //TEST
+            Response response = subscriptionService.getSubscriptions(token);
+
+            //VERIFY
+            assertEquals(Response.Status.NOT_FOUND, response.getStatusInfo());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void getSubscriptionsForUserSqlFail() {
+        //SETUP
+        String token = "test";
+
+        try {
+            when(validation.checkToken(token)).thenReturn(true);
+            //noinspection unchecked
+            when(userController.AuthenticateUser(token)).thenThrow(SQLException.class);
+
+            //TEST
+            Response response = subscriptionService.getSubscriptions(token);
+
+            //VERIFY
+            assertEquals(Response.Status.INTERNAL_SERVER_ERROR, response.getStatusInfo());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void addSubscriptionSucceed() {
+        //SETUP
+        String token = "test";
+        User user = mock(User.class);
+        AddSubscriptionRequest addSubscriptionRequest = mock(AddSubscriptionRequest.class);
+        SubscriptionsUserResponse subscriptionsUserResponse = mock(SubscriptionsUserResponse.class);
+
+        try {
+            when(validation.checkToken(token)).thenReturn(true);
+            when(userController.AuthenticateUser(token)).thenReturn(user);
+            when(subscriptionController.addSubscription(addSubscriptionRequest)).thenReturn(subscriptionsUserResponse);
+
+            //TEST
+            Response response = subscriptionService.addSubscription(token, addSubscriptionRequest);
+
+            //VERIFY
+            verify(subscriptionController).addSubscription(addSubscriptionRequest);
+            assertEquals(Response.Status.CREATED, response.getStatusInfo());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void addSubscriptionTokenFail() {
+        //SETUP
+        String token = "test";
+        AddSubscriptionRequest addSubscriptionRequest = mock(AddSubscriptionRequest.class);
+
+        when(validation.checkToken(token)).thenReturn(false);
+
+        //TEST
+        Response response = subscriptionService.addSubscription(token, addSubscriptionRequest);
+
+        //VERIFY
+        assertEquals(Response.Status.BAD_REQUEST, response.getStatusInfo());
+    }
+
+    @Test
+    public void addSubscriptionUnauthorized() {
+        //SETUP
+        String token = "test";
+        AddSubscriptionRequest addSubscriptionRequest = mock(AddSubscriptionRequest.class);
+
+        try {
+            when(validation.checkToken(token)).thenReturn(true);
+            when(userController.AuthenticateUser(token)).thenReturn(null);
+
+            //TEST
+            Response response = subscriptionService.addSubscription(token, addSubscriptionRequest);
+
+            //VERIFY
+            assertEquals(Response.Status.UNAUTHORIZED, response.getStatusInfo());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void addSubscriptionNotFound() {
+        //SETUP
+        String token = "test";
+        User user = mock(User.class);
+        AddSubscriptionRequest addSubscriptionRequest = mock(AddSubscriptionRequest.class);
+
+        try {
+            when(validation.checkToken(token)).thenReturn(true);
+            when(userController.AuthenticateUser(token)).thenReturn(user);
+            when(subscriptionController.addSubscription(addSubscriptionRequest)).thenReturn(null);
+
+            //TEST
+            Response response = subscriptionService.addSubscription(token, addSubscriptionRequest);
+
+            //VERIFY
+            assertEquals(Response.Status.NOT_FOUND, response.getStatusInfo());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void addSubscriptionSqlFail() {
+        //SETUP
+        String token = "test";
+        User user = mock(User.class);
+        AddSubscriptionRequest addSubscriptionRequest = mock(AddSubscriptionRequest.class);
+
+        try {
+            when(validation.checkToken(token)).thenReturn(true);
+            //noinspection unchecked
+            when(userController.AuthenticateUser(token)).thenThrow(SQLException.class);
+
+            //TEST
+            Response response = subscriptionService.addSubscription(token, addSubscriptionRequest);
+
+            //VERIFY
+            assertEquals(Response.Status.INTERNAL_SERVER_ERROR, response.getStatusInfo());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -60,6 +265,7 @@ public class SubscriptionServiceTest {
             Response response = subscriptionService.getSubscription(id, token);
 
             //VERIFY
+            verify(subscriptionController).getSubscription(id, user);
             assertEquals(Response.Status.OK, response.getStatusInfo());
 
         } catch (SQLException e) {
@@ -185,6 +391,7 @@ public class SubscriptionServiceTest {
             Response response = subscriptionService.terminateSubscription(id, token);
 
             //VERIFY
+            verify(subscriptionController).terminateSubscription(id, user);
             assertEquals(Response.Status.OK, response.getStatusInfo());
 
         } catch (SQLException e) {
@@ -399,5 +606,104 @@ public class SubscriptionServiceTest {
 
     @Test
     public void getAllSubscriptions() {
+        //SETUP
+        String token = "test";
+        String filter = "test";
+        User user = mock(User.class);
+
+        try {
+            when(validation.checkToken(token)).thenReturn(true);
+            when(userController.AuthenticateUser(token)).thenReturn(user);
+            when(subscriptionController.getAllSubscriptions(filter)).thenReturn(subscriptionList);
+
+            //TEST
+            Response response = subscriptionService.getAllSubscriptions(token, filter);
+
+            //VERIFY
+            assertEquals(Response.Status.OK, response.getStatusInfo());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void getAllSubscriptionsTokenFail() {
+        //SETUP
+        String token = "test";
+        String filter = "test";
+        when(validation.checkToken(token)).thenReturn(false);
+
+        //TEST
+        Response response = subscriptionService.getAllSubscriptions(token, filter);
+
+        //VERIFY
+        assertEquals(Response.Status.BAD_REQUEST, response.getStatusInfo());
+    }
+
+    @Test
+    public void getAllSubscriptionsUnauthorized() {
+        //SETUP
+        String token = "test";
+        String filter = "test";
+
+        try {
+            when(validation.checkToken(token)).thenReturn(true);
+            when(userController.AuthenticateUser(token)).thenReturn(null);
+
+            //TEST
+            Response response = subscriptionService.getAllSubscriptions(token, filter);
+
+            //VERIFY
+            assertEquals(Response.Status.UNAUTHORIZED, response.getStatusInfo());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void getAllSubscriptionsNotFound() {
+        //SETUP
+        String token = "test";
+        String filter = "test";
+        User user = mock(User.class);
+
+        try {
+            when(validation.checkToken(token)).thenReturn(true);
+            when(userController.AuthenticateUser(token)).thenReturn(user);
+            when(subscriptionController.getAllSubscriptions(filter)).thenReturn(null);
+
+            //TEST
+            Response response = subscriptionService.getAllSubscriptions(token, filter);
+
+            //VERIFY
+            assertEquals(Response.Status.NOT_FOUND, response.getStatusInfo());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void getAllSubscriptionsSqlFail() {
+        //SETUP
+        String token = "test";
+        String filter = "test";
+
+        try {
+            when(validation.checkToken(token)).thenReturn(true);
+            //noinspection unchecked
+            when(userController.AuthenticateUser(token)).thenThrow(SQLException.class);
+
+            //TEST
+            Response response = subscriptionService.getAllSubscriptions(token, filter);
+
+            //VERIFY
+            assertEquals(Response.Status.INTERNAL_SERVER_ERROR, response.getStatusInfo());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
