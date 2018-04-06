@@ -154,7 +154,9 @@ public class SubscriptionService {
             }
 
             subscriptionController.upgradeSubscription(id, user.getId(), request.getVerdubbeling());
-            return Response.status(Response.Status.CREATED).build();
+            SubscriptionResponse response = subscriptionController.getSubscription(id, user);
+
+            return Response.status(Response.Status.CREATED).entity(response).build();
 
         } catch (SQLException e) {
             e.printStackTrace();
