@@ -4,10 +4,9 @@ import vodagone.domain.Subscription;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 
 public class SubscriptionDao implements ISubscriptionDao {
 
@@ -70,14 +69,20 @@ public class SubscriptionDao implements ISubscriptionDao {
         preparedStatement.executeUpdate();
     }
 
-    public void addSubscription(Subscription subscription) throws SQLException {
-        String sql = "INSERT INTO abonnementen(id, aanbieder, dienst) " +
-                     "VALUES(?, ?, ?) ";
+    public void addSubscription(Subscription subscription, int userId) throws SQLException {
+        String sql = "INSERT INTO userabonnementen(userId, abbonementid, price, status, startDatum) " +
+                     "VALUES(?, ?, ?, ?, ?) ";
+
+        Calendar calendar = Calendar.getInstance();
+        Date date = new Date(calendar.getTime().getTime());
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setInt(1, subscription.getId());
-        preparedStatement.setString(2, subscription.getAanbieder());
-        preparedStatement.setString(3, subscription.getDienst());
+        preparedStatement.setInt(1, userId);
+        preparedStatement.setInt(2, subscription.getId());
+        preparedStatement.setDouble(3, subscription.getPricetag());
+        preparedStatement.setString(4, "actief");
+        preparedStatement.setDate(5, date);
+
         preparedStatement.executeUpdate();
     }
 

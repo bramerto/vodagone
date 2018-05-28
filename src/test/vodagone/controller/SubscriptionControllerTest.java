@@ -39,22 +39,26 @@ public class SubscriptionControllerTest {
     public void addSubscriptionSucceed() {
         //SETUP
         Subscription subscription = mock(Subscription.class);
-        ResultSet resultSet = mock(ResultSet.class);
+        User user = mock(User.class);
+        ResultSet resultSet1 = mock(ResultSet.class);
+        ResultSet resultSet2 = mock(ResultSet.class);
         SubscriptionsUserResponse subscriptionsUserResponse = mock(SubscriptionsUserResponse.class);
 
         AddSubscriptionRequest request = mock(AddSubscriptionRequest.class);
 
         try {
             //TEST
-            when(subscriptionResponseMapper.mapToSubscription(request)).thenReturn(subscription);
-            when(subscriptionDao.getAllSubscriptions()).thenReturn(resultSet);
-            when(subscriptionDBMapper.getList(resultSet)).thenReturn(subscriptionList);
+            when(subscriptionDao.getSubscription(request.getId(), user.getId())).thenReturn(resultSet1);
+            when(subscriptionDBMapper.getSingle(resultSet1)).thenReturn(subscription);
+
+            when(subscriptionDao.getAllSubscriptions()).thenReturn(resultSet2);
+            when(subscriptionDBMapper.getList(resultSet2)).thenReturn(subscriptionList);
             when(subscriptionResponseMapper.mapToCompactResponse(subscriptionList)).thenReturn(subscriptionsUserResponse);
 
-            subscriptionController.addSubscription(request);
+            subscriptionController.addSubscription(request, user);
 
             //VERIFY
-            verify(subscriptionDao).addSubscription(subscription);
+            verify(subscriptionDao).addSubscription(subscription, user.getId());
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -65,22 +69,26 @@ public class SubscriptionControllerTest {
     public void addSubscriptionFail() {
         //SETUP
         Subscription subscription = mock(Subscription.class);
-        ResultSet resultSet = mock(ResultSet.class);
+        ResultSet resultSet1 = mock(ResultSet.class);
+        ResultSet resultSet2 = mock(ResultSet.class);
+        User user = mock(User.class);
         SubscriptionsUserResponse subscriptionsUserResponse = mock(SubscriptionsUserResponse.class);
 
         AddSubscriptionRequest request = mock(AddSubscriptionRequest.class);
 
         try {
             //TEST
-            when(subscriptionResponseMapper.mapToSubscription(request)).thenReturn(subscription);
-            when(subscriptionDao.getAllSubscriptions()).thenReturn(resultSet);
-            when(subscriptionDBMapper.getList(resultSet)).thenReturn(null);
+            when(subscriptionDao.getSubscription(request.getId(), user.getId())).thenReturn(resultSet1);
+            when(subscriptionDBMapper.getSingle(resultSet1)).thenReturn(subscription);
+
+            when(subscriptionDao.getAllSubscriptions()).thenReturn(resultSet2);
+            when(subscriptionDBMapper.getList(resultSet2)).thenReturn(null);
             when(subscriptionResponseMapper.mapToCompactResponse(new ArrayList<>())).thenReturn(subscriptionsUserResponse);
 
-            subscriptionController.addSubscription(request);
+            subscriptionController.addSubscription(request, user);
 
             //VERIFY
-            verify(subscriptionDao).addSubscription(subscription);
+            verify(subscriptionDao).addSubscription(subscription, user.getId());
 
         } catch (SQLException e) {
             e.printStackTrace();

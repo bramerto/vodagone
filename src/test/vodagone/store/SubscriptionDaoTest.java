@@ -2,11 +2,10 @@ package vodagone.store;
 
 import org.junit.Test;
 import vodagone.domain.Subscription;
+import vodagone.domain.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.Calendar;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -159,11 +158,14 @@ public class SubscriptionDaoTest {
     @Test
     public void addSubscription() {
 
-        String sql = "INSERT INTO abonnementen(id, aanbieder, dienst) VALUES(?, ?, ?) ";
+        String sql = "INSERT INTO userabonnementen(userId, abbonementid, price, status, startDatum) " +
+                "VALUES(?, ?, ?, ?, ?) ";
         Subscription subscription = new Subscription();
+        long time = 0;
 
         //MOCKS
         Connection connection = mock(Connection.class);
+        User user = mock(User.class);
         PreparedStatement preparedStatement = mock(PreparedStatement.class);
         ResultSet resultSet = mock(ResultSet.class);
 
@@ -173,11 +175,12 @@ public class SubscriptionDaoTest {
 
             //TEST
             SubscriptionDao subscriptionDao = new SubscriptionDao(connection);
-            subscriptionDao.addSubscription(subscription);
+            subscriptionDao.addSubscription(subscription, user.getId());
 
             verify(preparedStatement).setInt(1, subscription.getId());
-            verify(preparedStatement).setString(2, subscription.getAanbieder());
-            verify(preparedStatement).setString(3, subscription.getDienst());
+            verify(preparedStatement).setInt(2, user.getId());
+            verify(preparedStatement).setDouble(3, subscription.getPricetag());
+            verify(preparedStatement).setString(4, "actief");
 
             verify(preparedStatement).executeUpdate();
 

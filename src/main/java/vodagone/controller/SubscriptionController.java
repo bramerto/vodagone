@@ -24,12 +24,16 @@ public class SubscriptionController {
     @Inject
     private SubscriptionDBMapper subscriptionDBMapper;
 
-    public SubscriptionsUserResponse addSubscription(AddSubscriptionRequest request) throws SQLException {
-        Subscription subscription = subscriptionResponseMapper.mapToSubscription(request);
-        subscriptionDao.addSubscription(subscription);
+    public SubscriptionsUserResponse addSubscription(AddSubscriptionRequest request, User user) throws SQLException {
 
-        ResultSet RSsubscriptions = subscriptionDao.getAllSubscriptions();
-        ArrayList<Subscription> subscriptions = subscriptionDBMapper.getList(RSsubscriptions);
+        Subscription subscription = subscriptionDBMapper.getSingle(subscriptionDao.getSubscription(
+                request.getId(),
+                user.getId()
+        ));
+
+        subscriptionDao.addSubscription(subscription, user.getId());
+
+        ArrayList<Subscription> subscriptions = subscriptionDBMapper.getList(subscriptionDao.getAllSubscriptions());
 
         if (subscriptions == null) {
             subscriptions = new ArrayList<>();

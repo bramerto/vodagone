@@ -151,13 +151,13 @@ public class SubscriptionServiceTest {
         try {
             when(validation.checkToken(token)).thenReturn(true);
             when(userController.AuthenticateUser(token)).thenReturn(user);
-            when(subscriptionController.addSubscription(addSubscriptionRequest)).thenReturn(subscriptionsUserResponse);
+            when(subscriptionController.addSubscription(addSubscriptionRequest, user)).thenReturn(subscriptionsUserResponse);
 
             //TEST
             Response response = subscriptionService.addSubscription(token, addSubscriptionRequest);
 
             //VERIFY
-            verify(subscriptionController).addSubscription(addSubscriptionRequest);
+            verify(subscriptionController).addSubscription(addSubscriptionRequest, user);
             assertEquals(Response.Status.CREATED, response.getStatusInfo());
 
         } catch (SQLException e) {
@@ -211,7 +211,7 @@ public class SubscriptionServiceTest {
         try {
             when(validation.checkToken(token)).thenReturn(true);
             when(userController.AuthenticateUser(token)).thenReturn(user);
-            when(subscriptionController.addSubscription(addSubscriptionRequest)).thenReturn(null);
+            when(subscriptionController.addSubscription(addSubscriptionRequest, user)).thenReturn(null);
 
             //TEST
             Response response = subscriptionService.addSubscription(token, addSubscriptionRequest);

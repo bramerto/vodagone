@@ -70,7 +70,7 @@ public class SubscriptionService {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
             }
 
-            SubscriptionsUserResponse response = subscriptionController.addSubscription(request);
+            SubscriptionsUserResponse response = subscriptionController.addSubscription(request, user);
 
             return (response == null) ?
                     Response.status(Response.Status.NOT_FOUND).build() :
