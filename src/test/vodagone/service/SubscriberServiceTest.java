@@ -154,7 +154,7 @@ public class SubscriberServiceTest {
             Response response = subscriberService.shareSubscription(id, token, shareSubscriptionRequest);
 
             //VERIFY
-            verify(userController).shareSubscription(subscription.getId(), token);
+            verify(userController).shareSubscription(subscription, id);
             assertEquals(Response.Status.CREATED, response.getStatusInfo());
 
         } catch (SQLException e) {
@@ -198,6 +198,7 @@ public class SubscriberServiceTest {
     public void shareSubscriptionUnauthorized() {
         //SETUP
         ShareSubscriptionRequest shareSubscriptionRequest = mock(ShareSubscriptionRequest.class);
+        shareSubscriptionRequest.setId(1);
         int id = 1;
         String token = "test";
 

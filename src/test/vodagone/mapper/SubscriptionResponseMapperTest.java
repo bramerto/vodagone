@@ -35,7 +35,7 @@ public class SubscriptionResponseMapperTest {
         assertEquals(subscriptionResponse.getAanbieder(), subscription.getAanbieder());
         assertEquals(subscriptionResponse.getDienst(), subscription.getDienst());
         assertEquals(subscriptionResponse.getPrijs(), subscription.getPrijs());
-        assertEquals(subscriptionResponse.getStartDatum(), subscription.getStartDatum());
+        assertEquals(subscriptionResponse.getStartDatum(), subscription.getStartDatum().toString());
         assertEquals(subscriptionResponse.getVerdubbeling(), subscription.getVerdubbeling());
         assertEquals(subscriptionResponse.isDeelbaar(), subscription.isDeelbaar());
         assertEquals(subscriptionResponse.getStatus(), subscription.getStatus());

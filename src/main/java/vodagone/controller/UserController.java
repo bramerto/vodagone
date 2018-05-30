@@ -1,8 +1,11 @@
 package vodagone.controller;
 
+import vodagone.domain.Subscription;
 import vodagone.domain.User;
 import vodagone.domain.compact.CompactUser;
 import vodagone.dto.response.LoginResponse;
+import vodagone.mapper.DB.IDBMapper;
+import vodagone.mapper.DB.SubscriptionDBMapper;
 import vodagone.mapper.DB.UserDBMapper;
 import vodagone.mapper.UserResponseMapper;
 import vodagone.store.IUserDao;
@@ -49,10 +52,10 @@ public class UserController {
         return userResponseMapper.mapToCompactList(users);
     }
 
-    public void shareSubscription(int subscriptionid, String token) throws SQLException {
-        ResultSet resultSet = userDao.getUserByToken(token);
-        User sharedToUser = userDBMapper.getSingle(resultSet);
+    public void shareSubscription(Subscription subscription, int userId) throws SQLException {
+        ResultSet userResultSet = userDao.getUserById(userId);
+        User sharedToUser = userDBMapper.getSingle(userResultSet);
 
-        subscriptionDao.shareSubscription(sharedToUser.getId(), subscriptionid);
+        subscriptionDao.shareSubscription(sharedToUser.getId(), subscription);
     }
 }

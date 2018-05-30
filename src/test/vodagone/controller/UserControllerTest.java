@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
+import vodagone.domain.Subscription;
 import vodagone.domain.User;
 import vodagone.mapper.DB.UserDBMapper;
 import vodagone.mapper.UserResponseMapper;
@@ -138,18 +139,17 @@ public class UserControllerTest {
             user.setId(1);
 
             ResultSet resultSet = mock(ResultSet.class);
-            String token = "1234";
-            int subscriptionid = 1;
+            Subscription subscription = mock(Subscription.class);
 
             //TEST
-            when(userDao.getUserByToken(token)).thenReturn(resultSet);
+            when(userDao.getUserById(user.getId())).thenReturn(resultSet);
             when(userDBMapper.getSingle(resultSet)).thenReturn(user);
 
-            userController.shareSubscription(subscriptionid, token);
+            userController.shareSubscription(subscription, user.getId());
 
             //VERIFY
-            verify(userDao).getUserByToken(token);
-            verify(subscriptionDao).shareSubscription(user.getId(), subscriptionid);
+            verify(userDao).getUserById(user.getId());
+            verify(subscriptionDao).shareSubscription(user.getId(), subscription);
 
         } catch (SQLException e) {
             e.printStackTrace();

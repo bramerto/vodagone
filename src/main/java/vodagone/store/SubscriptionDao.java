@@ -70,19 +70,23 @@ public class SubscriptionDao implements ISubscriptionDao {
         return preparedStatement.executeQuery();
     }
 
-    public void shareSubscription(int sharedToUserId, int toBeSharedSubscriptionId) throws SQLException {
-        String sql = "INSERT INTO userabonnementen(userid, abbonementid) " +
-                     "VALUES(?, ?)";
+    public void shareSubscription(int sharedToUserId, Subscription toBeSharedSubscription) throws SQLException {
+        String sql = "INSERT INTO userabonnementen(userid, abbonementid, price, status, startDatum, verdubbeling) " +
+                     "VALUES(?, ?, ?, ?, ?, ?)";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setInt(1, sharedToUserId);
-        preparedStatement.setInt(2, toBeSharedSubscriptionId);
+        preparedStatement.setInt(2, toBeSharedSubscription.getId());
+        preparedStatement.setDouble(3, toBeSharedSubscription.getPricetag());
+        preparedStatement.setString(4, toBeSharedSubscription.getStatus());
+        preparedStatement.setDate(5, (Date) toBeSharedSubscription.getStartDatum());
+        preparedStatement.setString(6, toBeSharedSubscription.getVerdubbeling());
         preparedStatement.executeUpdate();
     }
 
     public void addSubscription(Abonnement subscription, int userId) throws SQLException {
-        String sql = "INSERT INTO userabonnementen(userId, abbonementid, price, status, startDatum) " +
-                     "VALUES(?, ?, ?, ?, ?) ";
+        String sql = "INSERT INTO userabonnementen(userId, abbonementid, price, status, startDatum, verdubbeling) " +
+                     "VALUES(?, ?, ?, ?, ?, ?) ";
 
         Calendar calendar = Calendar.getInstance();
         Date date = new Date(calendar.getTime().getTime());
@@ -93,6 +97,7 @@ public class SubscriptionDao implements ISubscriptionDao {
         preparedStatement.setDouble(3, subscription.getPrijs());
         preparedStatement.setString(4, "actief");
         preparedStatement.setDate(5, date);
+        preparedStatement.setString(6, "standaard");
 
         preparedStatement.executeUpdate();
     }

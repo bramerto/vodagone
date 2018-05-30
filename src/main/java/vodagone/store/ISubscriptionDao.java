@@ -12,7 +12,7 @@ public interface ISubscriptionDao {
     ResultSet getAllSubscriptionsByUser(int userId) throws SQLException;
     ResultSet getSubscription(int id, int authenticatedUserId) throws SQLException;
     ResultSet getSubscription(int id) throws SQLException;
-    void shareSubscription(int sharedToUserId, int toBeSharedSubscriptionId) throws SQLException;
+    void shareSubscription(int sharedToUserId, Subscription toBeSharedSubscription) throws SQLException;
     void addSubscription(Abonnement subscription, int userid) throws SQLException;
     void upgradeSubscription(int id, int userId, String upgrade) throws SQLException;
     void terminateSubscription(int id) throws SQLException;

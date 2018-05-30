@@ -74,7 +74,7 @@ public class SubscriberService {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
 
-            userController.shareSubscription(subscription.getId(), token);
+            userController.shareSubscription(subscription, id);
 
             return Response.status(Response.Status.CREATED).build();
 

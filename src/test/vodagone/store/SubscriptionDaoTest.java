@@ -132,10 +132,10 @@ public class SubscriptionDaoTest {
     }
 
     @Test
-    public void shareSubscription() {
-        String sql = "INSERT INTO userabonnementen(userid, abbonementid) VALUES(?, ?)";
-        int sharedToUserID = 1;
-        int toBeSharedSubscriptionId = 1;
+    public void getSubscription2() {
+        //SETUP
+        String sql = defaultSelect + " WHERE id = ?";
+        int subscriptionId = 1;
 
         //MOCKS
         Connection connection = mock(Connection.class);
@@ -148,10 +148,42 @@ public class SubscriptionDaoTest {
 
             //TEST
             SubscriptionDao subscriptionDao = new SubscriptionDao(connection);
-            subscriptionDao.shareSubscription(sharedToUserID, toBeSharedSubscriptionId);
+            subscriptionDao.getSubscription(subscriptionId);
+
+            verify(preparedStatement).executeQuery();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void shareSubscription() {
+        String sql = "INSERT INTO userabonnementen(userid, abbonementid, price, status, startDatum, verdubbeling) " +
+                     "VALUES(?, ?, ?, ?, ?, ?)";
+
+        int sharedToUserID = 1;
+
+        //MOCKS
+        Connection connection = mock(Connection.class);
+        PreparedStatement preparedStatement = mock(PreparedStatement.class);
+        ResultSet resultSet = mock(ResultSet.class);
+        Subscription subscription = mock(Subscription.class);
+
+        try {
+            when(connection.prepareStatement(sql)).thenReturn(preparedStatement);
+            when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+            //TEST
+            SubscriptionDao subscriptionDao = new SubscriptionDao(connection);
+            subscriptionDao.shareSubscription(sharedToUserID, subscription);
 
             verify(preparedStatement).setInt(1, sharedToUserID);
-            verify(preparedStatement).setInt(2, toBeSharedSubscriptionId);
+            verify(preparedStatement).setInt(2, subscription.getId());
+            verify(preparedStatement).setDouble(3, subscription.getPricetag());
+            verify(preparedStatement).setString(4, subscription.getStatus());
+            verify(preparedStatement).setDate(5, (Date) subscription.getStartDatum());
+            verify(preparedStatement).setString(6, subscription.getVerdubbeling());
             verify(preparedStatement).executeUpdate();
 
         } catch (SQLException e) {
@@ -162,8 +194,8 @@ public class SubscriptionDaoTest {
     @Test
     public void addSubscription() {
 
-        String sql = "INSERT INTO userabonnementen(userId, abbonementid, price, status, startDatum) " +
-                "VALUES(?, ?, ?, ?, ?) ";
+        String sql = "INSERT INTO userabonnementen(userId, abbonementid, price, status, startDatum, verdubbeling) " +
+                "VALUES(?, ?, ?, ?, ?, ?) ";
         Abonnement subscription = new Abonnement();
 
         //MOCKS
@@ -184,6 +216,7 @@ public class SubscriptionDaoTest {
             verify(preparedStatement).setInt(2, user.getId());
             verify(preparedStatement).setDouble(3, subscription.getPrijs());
             verify(preparedStatement).setString(4, "actief");
+            verify(preparedStatement).setString(6, "standaard");
 
             verify(preparedStatement).executeUpdate();
 
