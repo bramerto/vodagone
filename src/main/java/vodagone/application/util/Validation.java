@@ -6,6 +6,6 @@ public class Validation {
     }
 
     public boolean checkId(int id) {
-        return (id != 0);
+        return (id > 0);
     }
 }

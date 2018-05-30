@@ -7,7 +7,7 @@ public class SubscriptionResponse implements IResponse {
     private String aanbieder;
     private String dienst;
     private String prijs;
-    private Date startDatum;
+    private String startDatum;
     private String verdubbeling;
     private boolean deelbaar;
     private String status;
@@ -44,11 +44,11 @@ public class SubscriptionResponse implements IResponse {
         this.prijs = prijs;
     }
 
-    public Date getStartDatum() {
+    public String getStartDatum() {
         return startDatum;
     }
 
-    public void setStartDatum(Date startDatum) {
+    public void setStartDatum(String startDatum) {
         this.startDatum = startDatum;
     }
 

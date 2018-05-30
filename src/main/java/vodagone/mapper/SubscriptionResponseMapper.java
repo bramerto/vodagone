@@ -17,7 +17,7 @@ public class SubscriptionResponseMapper {
         subscriptionResponse.setAanbieder(subscription.getAanbieder());
         subscriptionResponse.setDienst(subscription.getDienst());
         subscriptionResponse.setPrijs(subscription.getPrijs());
-        subscriptionResponse.setStartDatum(subscription.getStartDatum());
+        subscriptionResponse.setStartDatum(subscription.getStartDatum().toString());
         subscriptionResponse.setVerdubbeling(subscription.getVerdubbeling());
         subscriptionResponse.setDeelbaar(subscription.isDeelbaar());
         subscriptionResponse.setStatus(subscription.getStatus());
