@@ -1,6 +1,8 @@
 package vodagone.mapper.DB;
 
+import vodagone.domain.Abonnement;
 import vodagone.domain.Subscription;
+import vodagone.domain.compact.CompactSubscription;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,6 +27,29 @@ public class SubscriptionDBMapper implements IDBMapper {
         return map(rs);
     }
 
+    public ArrayList<CompactSubscription> getCompactList(ResultSet rs) throws SQLException {
+
+        if (!rs.next()) return null;
+        rs.beforeFirst();
+        ArrayList<CompactSubscription> subscriptions = new ArrayList<>();
+
+        while (rs.next()) {
+            subscriptions.add(mapCompact(rs));
+        }
+
+        return subscriptions;
+    }
+
+    private CompactSubscription mapCompact(ResultSet rs) throws SQLException {
+        CompactSubscription subscription = new CompactSubscription();
+
+        subscription.setId(rs.getInt("id"));
+        subscription.setAanbieder(rs.getString("aanbieder"));
+        subscription.setDienst(rs.getString("dienst"));
+
+        return subscription;
+    }
+
     public Subscription map(ResultSet rs) throws SQLException {
         Subscription subscription = new Subscription();
 
@@ -39,5 +64,22 @@ public class SubscriptionDBMapper implements IDBMapper {
         subscription.setStatus(rs.getString("status"));
 
         return subscription;
+    }
+
+    public Abonnement getSingleAbonnement(ResultSet rs) throws SQLException {
+        if (!rs.next()) return null;
+        return mapAbonnement(rs);
+    }
+
+    private Abonnement mapAbonnement(ResultSet rs) throws SQLException {
+        Abonnement abonnement = new Abonnement();
+
+        abonnement.setId(rs.getInt("id"));
+        abonnement.setAanbieder(rs.getString("aanbieder"));
+        abonnement.setDienst(rs.getString("dienst"));
+        abonnement.setPrijs(rs.getDouble("prijs"));
+        abonnement.setDeelbaar(rs.getBoolean("dienst"));
+
+        return abonnement;
     }
 }

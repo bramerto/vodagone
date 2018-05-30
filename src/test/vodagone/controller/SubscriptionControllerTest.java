@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import vodagone.domain.Abonnement;
 import vodagone.domain.Subscription;
 import vodagone.domain.User;
 import vodagone.dto.request.AddSubscriptionRequest;
@@ -38,7 +39,7 @@ public class SubscriptionControllerTest {
     @Test
     public void addSubscriptionSucceed() {
         //SETUP
-        Subscription subscription = mock(Subscription.class);
+        Abonnement subscription = mock(Abonnement.class);
         User user = mock(User.class);
         ResultSet resultSet1 = mock(ResultSet.class);
         ResultSet resultSet2 = mock(ResultSet.class);
@@ -48,8 +49,8 @@ public class SubscriptionControllerTest {
 
         try {
             //TEST
-            when(subscriptionDao.getSubscription(request.getId(), user.getId())).thenReturn(resultSet1);
-            when(subscriptionDBMapper.getSingle(resultSet1)).thenReturn(subscription);
+            when(subscriptionDao.getSubscription(request.getId())).thenReturn(resultSet1);
+            when(subscriptionDBMapper.getSingleAbonnement(resultSet1)).thenReturn(subscription);
 
             when(subscriptionDao.getAllSubscriptions()).thenReturn(resultSet2);
             when(subscriptionDBMapper.getList(resultSet2)).thenReturn(subscriptionList);
@@ -68,7 +69,7 @@ public class SubscriptionControllerTest {
     @Test
     public void addSubscriptionFail() {
         //SETUP
-        Subscription subscription = mock(Subscription.class);
+        Abonnement subscription = mock(Abonnement.class);
         ResultSet resultSet1 = mock(ResultSet.class);
         ResultSet resultSet2 = mock(ResultSet.class);
         User user = mock(User.class);
@@ -78,8 +79,8 @@ public class SubscriptionControllerTest {
 
         try {
             //TEST
-            when(subscriptionDao.getSubscription(request.getId(), user.getId())).thenReturn(resultSet1);
-            when(subscriptionDBMapper.getSingle(resultSet1)).thenReturn(subscription);
+            when(subscriptionDao.getSubscription(request.getId())).thenReturn(resultSet1);
+            when(subscriptionDBMapper.getSingleAbonnement(resultSet1)).thenReturn(subscription);
 
             when(subscriptionDao.getAllSubscriptions()).thenReturn(resultSet2);
             when(subscriptionDBMapper.getList(resultSet2)).thenReturn(null);
@@ -241,7 +242,6 @@ public class SubscriptionControllerTest {
             subscriptionController.getAllSubscriptions(filter);
 
             verify(subscriptionDao).getAllSubscriptions(filter);
-            verify(subscriptionResponseMapper).mapToCompactList(subscriptionList);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -259,7 +259,7 @@ public class SubscriptionControllerTest {
             subscriptionController.getAllSubscriptions(filter);
 
             verify(subscriptionDao).getAllSubscriptions();
-            verify(subscriptionResponseMapper).mapToCompactList(subscriptionList);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -276,7 +276,6 @@ public class SubscriptionControllerTest {
             subscriptionController.getAllSubscriptions(null);
 
             verify(subscriptionDao).getAllSubscriptions();
-            verify(subscriptionResponseMapper).mapToCompactList(subscriptionList);
         } catch (SQLException e) {
             e.printStackTrace();
         }

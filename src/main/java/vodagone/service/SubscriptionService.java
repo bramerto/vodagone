@@ -59,7 +59,6 @@ public class SubscriptionService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response addSubscription(@QueryParam("token") String token, AddSubscriptionRequest request) {
         try {
-
             if (!validation.checkToken(token)) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }

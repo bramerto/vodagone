@@ -1,5 +1,6 @@
 package vodagone.controller;
 
+import vodagone.domain.Abonnement;
 import vodagone.domain.Subscription;
 import vodagone.domain.User;
 import vodagone.domain.compact.CompactSubscription;
@@ -26,23 +27,12 @@ public class SubscriptionController {
 
     public SubscriptionsUserResponse addSubscription(AddSubscriptionRequest request, User user) throws SQLException {
 
-        Subscription subscription = subscriptionDBMapper.getSingle(subscriptionDao.getSubscription(
-                request.getId(),
-                user.getId()
-        ));
+        ResultSet RSsubscription = subscriptionDao.getSubscription(request.getId());
+        Abonnement subscription = subscriptionDBMapper.getSingleAbonnement(RSsubscription);
 
         subscriptionDao.addSubscription(subscription, user.getId());
 
-        ArrayList<Subscription> subscriptions = subscriptionDBMapper.getList(subscriptionDao.getAllSubscriptions());
-
-        if (subscriptions == null) {
-            subscriptions = new ArrayList<>();
-        }
-
-        SubscriptionsUserResponse response = subscriptionResponseMapper.mapToCompactResponse(subscriptions);
-        response.addEntryToList(request.toCompact());
-
-        return response;
+        return getSubscriptionsForUser(user);
     }
 
     public SubscriptionsUserResponse getSubscriptionsForUser(User user) throws SQLException {
@@ -83,16 +73,9 @@ public class SubscriptionController {
     }
 
     public ArrayList<CompactSubscription> getAllSubscriptions(String filter) throws SQLException {
-        ResultSet RSsubscriptions = (filter != null && !filter.isEmpty()) ?
-                subscriptionDao.getAllSubscriptions(filter) :
-                subscriptionDao.getAllSubscriptions();
-        ArrayList<Subscription> subscriptions = subscriptionDBMapper.getList(RSsubscriptions);
+        ResultSet RSsubscriptions = (filter == null || filter.isEmpty()) ? subscriptionDao.getAllSubscriptions() : subscriptionDao.getAllSubscriptions(filter);
 
-        if (subscriptions == null) {
-            return null;
-        }
-
-        return subscriptionResponseMapper.mapToCompactList(subscriptions);
+        return subscriptionDBMapper.getCompactList(RSsubscriptions);
     }
 
     public Subscription checkIfShareable(int subscriptionId, int userId) throws SQLException {

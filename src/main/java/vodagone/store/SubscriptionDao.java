@@ -1,5 +1,6 @@
 package vodagone.store;
 
+import vodagone.domain.Abonnement;
 import vodagone.domain.Subscription;
 
 import javax.inject.Inject;
@@ -11,39 +12,41 @@ import java.util.Calendar;
 public class SubscriptionDao implements ISubscriptionDao {
 
     private Connection connection;
+    private String defaultUserSelect;
     private String defaultSelect;
 
     @Inject
     public SubscriptionDao(@Named("connection") Connection connection) {
-        defaultSelect = "SELECT a.id, a.aanbieder, a.dienst, a.prijs, a.deelbaar, " +
+        defaultUserSelect = "SELECT a.id, a.aanbieder, a.dienst, a.prijs, a.deelbaar, " +
                         "ua.price, ua.status, ua.startDatum, ua.verdubbeling " +
                         "FROM abonnementen AS a " +
                         "INNER JOIN userabonnementen AS ua " +
-                        "ON a.id = ua.abbonementid ";
+                        "ON a.id = ua.abbonementid";
+
+        defaultSelect = "SELECT id, aanbieder, dienst, prijs, deelbaar " +
+                        "FROM abonnementen";
 
         this.connection = connection;
     }
 
     public ResultSet getAllSubscriptions(String filter) throws SQLException {
-        String sql = defaultSelect + "WHERE a.aanbieder = ? OR a.dienst = ?";
+        String sql = defaultSelect + " WHERE aanbieder LIKE ? OR dienst LIKE ?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, filter);
-        preparedStatement.setString(2, filter);
+        preparedStatement.setString(1, "%"+filter+"%");
+        preparedStatement.setString(2, "%"+filter+"%");
 
         return preparedStatement.executeQuery();
     }
 
     public ResultSet getAllSubscriptions() throws SQLException {
-        String sql = defaultSelect;
-
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        PreparedStatement preparedStatement = connection.prepareStatement(defaultSelect);
         return preparedStatement.executeQuery();
     }
 
     public ResultSet getAllSubscriptionsByUser(int userId) throws SQLException {
 
-        String sql = defaultSelect + "WHERE ua.userid = ?";
+        String sql = defaultUserSelect + " WHERE ua.userid = ?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setInt(1, userId);
@@ -51,11 +54,19 @@ public class SubscriptionDao implements ISubscriptionDao {
     }
 
     public ResultSet getSubscription(int id, int authenticatedUserId) throws SQLException {
-        String sql = defaultSelect + "WHERE ua.userid = ? AND a.id = ?";
+        String sql = defaultUserSelect + " WHERE ua.userid = ? AND a.id = ?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setInt(1, authenticatedUserId);
         preparedStatement.setInt(2, id);
+        return preparedStatement.executeQuery();
+    }
+
+    public ResultSet getSubscription(int id) throws SQLException {
+        String sql = defaultSelect + " WHERE id = ?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setInt(1, id);
         return preparedStatement.executeQuery();
     }
 
@@ -69,7 +80,7 @@ public class SubscriptionDao implements ISubscriptionDao {
         preparedStatement.executeUpdate();
     }
 
-    public void addSubscription(Subscription subscription, int userId) throws SQLException {
+    public void addSubscription(Abonnement subscription, int userId) throws SQLException {
         String sql = "INSERT INTO userabonnementen(userId, abbonementid, price, status, startDatum) " +
                      "VALUES(?, ?, ?, ?, ?) ";
 
@@ -79,7 +90,7 @@ public class SubscriptionDao implements ISubscriptionDao {
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setInt(1, userId);
         preparedStatement.setInt(2, subscription.getId());
-        preparedStatement.setDouble(3, subscription.getPricetag());
+        preparedStatement.setDouble(3, subscription.getPrijs());
         preparedStatement.setString(4, "actief");
         preparedStatement.setDate(5, date);
 

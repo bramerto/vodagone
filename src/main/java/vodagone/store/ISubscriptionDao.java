@@ -1,5 +1,6 @@
 package vodagone.store;
 
+import vodagone.domain.Abonnement;
 import vodagone.domain.Subscription;
 
 import java.sql.ResultSet;
@@ -10,8 +11,9 @@ public interface ISubscriptionDao {
     ResultSet getAllSubscriptions(String filter) throws SQLException;
     ResultSet getAllSubscriptionsByUser(int userId) throws SQLException;
     ResultSet getSubscription(int id, int authenticatedUserId) throws SQLException;
+    ResultSet getSubscription(int id) throws SQLException;
     void shareSubscription(int sharedToUserId, int toBeSharedSubscriptionId) throws SQLException;
-    void addSubscription(Subscription subscription, int userid) throws SQLException;
+    void addSubscription(Abonnement subscription, int userid) throws SQLException;
     void upgradeSubscription(int id, int userId, String upgrade) throws SQLException;
     void terminateSubscription(int id) throws SQLException;
 }

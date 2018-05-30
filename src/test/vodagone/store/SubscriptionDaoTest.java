@@ -1,6 +1,7 @@
 package vodagone.store;
 
 import org.junit.Test;
+import vodagone.domain.Abonnement;
 import vodagone.domain.Subscription;
 import vodagone.domain.User;
 
@@ -13,11 +14,14 @@ import static org.mockito.Mockito.when;
 
 public class SubscriptionDaoTest {
 
-    private String defaultSelect = "SELECT a.id, a.aanbieder, a.dienst, a.prijs, a.deelbaar, " +
+    private String defaultUserSelect = "SELECT a.id, a.aanbieder, a.dienst, a.prijs, a.deelbaar, " +
             "ua.price, ua.status, ua.startDatum, ua.verdubbeling " +
             "FROM abonnementen AS a " +
             "INNER JOIN userabonnementen AS ua " +
-            "ON a.id = ua.abbonementid ";
+            "ON a.id = ua.abbonementid";
+
+    private String defaultSelect = "SELECT id, aanbieder, dienst, prijs, deelbaar " +
+                                   "FROM abonnementen";
 
     @Test
     public void getAllSubscriptions() {
@@ -47,7 +51,7 @@ public class SubscriptionDaoTest {
     @Test
     public void getAllSubscriptionsWithFilter() {
         //SETUP
-        String sql = defaultSelect + "WHERE a.aanbieder = ? OR a.dienst = ?";
+        String sql = defaultSelect + " WHERE aanbieder LIKE ? OR dienst LIKE ?";
         String filter = "test";
 
         //MOCKS
@@ -63,8 +67,8 @@ public class SubscriptionDaoTest {
             SubscriptionDao subscriptionDao = new SubscriptionDao(connection);
             subscriptionDao.getAllSubscriptions(filter);
 
-            verify(preparedStatement).setString(1, filter);
-            verify(preparedStatement).setString(2, filter);
+            verify(preparedStatement).setString(1, "%"+filter+"%");
+            verify(preparedStatement).setString(2, "%"+filter+"%");
             verify(preparedStatement).executeQuery();
 
         } catch (SQLException e) {
@@ -75,7 +79,7 @@ public class SubscriptionDaoTest {
     @Test
     public void getAllSubscriptionsByUser() {
         //SETUP
-        String sql = defaultSelect + "WHERE ua.userid = ?";
+        String sql = defaultUserSelect + " WHERE ua.userid = ?";
         int userId = 1;
 
         //MOCKS
@@ -102,7 +106,7 @@ public class SubscriptionDaoTest {
     @Test
     public void getSubscription() {
         //SETUP
-        String sql = defaultSelect + "WHERE ua.userid = ? AND a.id = ?";
+        String sql = defaultUserSelect + " WHERE ua.userid = ? AND a.id = ?";
         int userId = 1;
         int subscriptionId = 1;
 
@@ -160,8 +164,7 @@ public class SubscriptionDaoTest {
 
         String sql = "INSERT INTO userabonnementen(userId, abbonementid, price, status, startDatum) " +
                 "VALUES(?, ?, ?, ?, ?) ";
-        Subscription subscription = new Subscription();
-        long time = 0;
+        Abonnement subscription = new Abonnement();
 
         //MOCKS
         Connection connection = mock(Connection.class);
@@ -179,7 +182,7 @@ public class SubscriptionDaoTest {
 
             verify(preparedStatement).setInt(1, subscription.getId());
             verify(preparedStatement).setInt(2, user.getId());
-            verify(preparedStatement).setDouble(3, subscription.getPricetag());
+            verify(preparedStatement).setDouble(3, subscription.getPrijs());
             verify(preparedStatement).setString(4, "actief");
 
             verify(preparedStatement).executeUpdate();
